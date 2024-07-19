@@ -1,0 +1,323 @@
+char*	yytoknames[] =
+{
+	"$end",
+	"error",
+	"$unk",
+	" |",
+	" ^",
+	" &",
+	" <",
+	" >",
+	" +",
+	" -",
+	" *",
+	" /",
+	" %",
+	"LADD",
+	"LMUL",
+	"LBEQ",
+	"LBR",
+	"LBRET",
+	"LCALL",
+	"LFLT2",
+	"LFLT3",
+	"LMOVB",
+	"LMOVBU",
+	"LMOVW",
+	"LMOVF",
+	"LLUI",
+	"LSYS",
+	"LSYS0",
+	"LCSR",
+	"LSWAP",
+	"LAMO",
+	"LCONST",
+	"LSP",
+	"LSB",
+	"LFP",
+	"LPC",
+	"LREG",
+	"LFREG",
+	"LR",
+	"FR",
+	"LCTL",
+	"LDATA",
+	"LTEXT",
+	"LWORD",
+	"LSCONST",
+	"LFCONST",
+	"LNAME",
+	"LLAB",
+	"LVAR",
+	" :",
+	" =",
+	" ;",
+	" ,",
+	" $",
+	" (",
+	" )",
+	" ~",
+};
+char*	yystates[] =
+{
+	0, /*0*/
+	"$accept:  prog.$end \nprog:  prog.line \n", /*1*/
+	0, /*2*/
+	"line:  LLAB.: $$3 line \n", /*3*/
+	"line:  LNAME.: $$5 line \nline:  LNAME.= expr ; \n", /*4*/
+	"line:  LVAR.= expr ; \n", /*5*/
+	0, /*6*/
+	"line:  inst.; \n", /*7*/
+	"line:  error.; \n", /*8*/
+	0, /*9*/
+	"inst:  oprrr.rreg , rreg \ninst:  oprrr.rreg , sreg , rreg \n", /*10*/
+	"inst:  LFLT2.drreg , drreg \n", /*11*/
+	"inst:  LFLT3.drreg , freg , drreg \n", /*12*/
+	"inst:  LBEQ.rreg , sreg , rel \ninst:  LBEQ.rreg , rel \n", /*13*/
+	"inst:  LBR.rel \ninst:  LBR.oreg \n", /*14*/
+	0, /*15*/
+	"inst:  LCALL.sreg , addr \ninst:  LCALL.sreg , rel \n", /*16*/
+	"inst:  LMOVB.addr , rreg \ninst:  LMOVB.rreg , addr \n", /*17*/
+	"inst:  LMOVBU.addr , rreg \n", /*18*/
+	"inst:  LMOVF.addr , dreg \ninst:  LMOVF.dreg , addr \ninst:  LMOVF.dreg , dreg \n", /*19*/
+	"inst:  LMOVW.imm , rreg \ninst:  LMOVW.ximm , rreg \ninst:  LMOVW.rreg , rreg \ninst:  LMOVW.addr , rreg \ninst:  LMOVW.rreg , addr \ninst:  LMOVW.rreg , ctlreg \ninst:  LMOVW.imm , ctlreg \ninst:  LMOVW.ctlreg , rreg \n", /*20*/
+	"inst:  LLUI.name , rreg \ninst:  LLUI.imm , rreg \n", /*21*/
+	"inst:  LSYS.imm \n", /*22*/
+	0, /*23*/
+	"inst:  LCSR.ctlreg , sreg , rreg \ninst:  LCSR.ctlreg , $ con , rreg \n", /*24*/
+	"inst:  LSWAP.rreg , sreg , rreg \n", /*25*/
+	"inst:  LAMO.con , rreg , sreg , rreg \n", /*26*/
+	"inst:  LTEXT.name , imm \ninst:  LTEXT.name , con , imm \n", /*27*/
+	"inst:  LDATA.name / con , imm \ninst:  LDATA.name / con , ximm \ninst:  LDATA.name / con , fimm \n", /*28*/
+	"inst:  LWORD.imm \n", /*29*/
+	0, /*30*/
+	0, /*31*/
+	0, /*32*/
+	"line:  LNAME =.expr ; \n", /*33*/
+	"line:  LVAR =.expr ; \n", /*34*/
+	0, /*35*/
+	0, /*36*/
+	"inst:  LADD imm., rreg \ninst:  LADD imm., sreg , rreg \n", /*37*/
+	"imm:  $.con \n", /*38*/
+	"inst:  oprrr rreg., rreg \ninst:  oprrr rreg., sreg , rreg \n", /*39*/
+	0, /*40*/
+	0, /*41*/
+	"sreg:  LR.( expr ) \n", /*42*/
+	"inst:  LFLT2 drreg., drreg \n", /*43*/
+	0, /*44*/
+	0, /*45*/
+	0, /*46*/
+	0, /*47*/
+	"freg:  FR.( expr ) \n", /*48*/
+	"inst:  LFLT3 drreg., freg , drreg \n", /*49*/
+	"inst:  LBEQ rreg., sreg , rel \ninst:  LBEQ rreg., rel \n", /*50*/
+	0, /*51*/
+	0, /*52*/
+	"rel:  con.( LPC ) \noreg:  con.( sreg ) \n", /*53*/
+	0, /*54*/
+	0, /*55*/
+	"oreg:  (.sreg ) \ncon:  (.expr ) \n", /*56*/
+	0, /*57*/
+	0, /*58*/
+	"con:  -.con \n", /*59*/
+	"con:  +.con \n", /*60*/
+	"con:  ~.con \n", /*61*/
+	"inst:  LCALL sreg., addr \ninst:  LCALL sreg., rel \n", /*62*/
+	"inst:  LMOVB addr., rreg \n", /*63*/
+	"inst:  LMOVB rreg., addr \n", /*64*/
+	0, /*65*/
+	0, /*66*/
+	"oreg:  con.( sreg ) \nname:  con.( pointer ) \n", /*67*/
+	0, /*68*/
+	"inst:  LMOVBU addr., rreg \n", /*69*/
+	"inst:  LMOVF addr., dreg \n", /*70*/
+	"inst:  LMOVF dreg., addr \ninst:  LMOVF dreg., dreg \n", /*71*/
+	"inst:  LMOVW imm., rreg \ninst:  LMOVW imm., ctlreg \n", /*72*/
+	"inst:  LMOVW ximm., rreg \n", /*73*/
+	"inst:  LMOVW rreg., rreg \ninst:  LMOVW rreg., addr \ninst:  LMOVW rreg., ctlreg \n", /*74*/
+	"inst:  LMOVW addr., rreg \n", /*75*/
+	"inst:  LMOVW ctlreg., rreg \n", /*76*/
+	"ximm:  $.addr \nximm:  $.LSCONST \nimm:  $.con \n", /*77*/
+	"ctlreg:  LCTL.( expr ) \n", /*78*/
+	"inst:  LLUI name., rreg \n", /*79*/
+	"inst:  LLUI imm., rreg \n", /*80*/
+	"name:  con.( pointer ) \n", /*81*/
+	"con:  (.expr ) \n", /*82*/
+	0, /*83*/
+	"inst:  LCSR ctlreg., sreg , rreg \ninst:  LCSR ctlreg., $ con , rreg \n", /*84*/
+	"inst:  LSWAP rreg., sreg , rreg \n", /*85*/
+	"inst:  LAMO con., rreg , sreg , rreg \n", /*86*/
+	"inst:  LTEXT name., imm \ninst:  LTEXT name., con , imm \n", /*87*/
+	"inst:  LDATA name./ con , imm \ninst:  LDATA name./ con , ximm \ninst:  LDATA name./ con , fimm \n", /*88*/
+	0, /*89*/
+	"line:  LLAB : $$3.line \n", /*90*/
+	"line:  LNAME : $$5.line \n", /*91*/
+	"line:  LNAME = expr.; \nexpr:  expr.+ expr \nexpr:  expr.- expr \nexpr:  expr.* expr \nexpr:  expr./ expr \nexpr:  expr.% expr \nexpr:  expr.< < expr \nexpr:  expr.> > expr \nexpr:  expr.& expr \nexpr:  expr.^ expr \nexpr:  expr.| expr \n", /*92*/
+	0, /*93*/
+	"line:  LVAR = expr.; \nexpr:  expr.+ expr \nexpr:  expr.- expr \nexpr:  expr.* expr \nexpr:  expr./ expr \nexpr:  expr.% expr \nexpr:  expr.< < expr \nexpr:  expr.> > expr \nexpr:  expr.& expr \nexpr:  expr.^ expr \nexpr:  expr.| expr \n", /*94*/
+	"inst:  LADD imm ,.rreg \ninst:  LADD imm ,.sreg , rreg \n", /*95*/
+	0, /*96*/
+	"inst:  oprrr rreg ,.rreg \ninst:  oprrr rreg ,.sreg , rreg \n", /*97*/
+	"sreg:  LR (.expr ) \n", /*98*/
+	"inst:  LFLT2 drreg ,.drreg \n", /*99*/
+	"freg:  FR (.expr ) \n", /*100*/
+	"inst:  LFLT3 drreg ,.freg , drreg \n", /*101*/
+	"inst:  LBEQ rreg ,.sreg , rel \ninst:  LBEQ rreg ,.rel \n", /*102*/
+	"rel:  con (.LPC ) \noreg:  con (.sreg ) \n", /*103*/
+	0, /*104*/
+	"offset:  +.con \n", /*105*/
+	"offset:  -.con \n", /*106*/
+	0, /*107*/
+	"oreg:  ( sreg.) \n", /*108*/
+	"con:  ( expr.) \nexpr:  expr.+ expr \nexpr:  expr.- expr \nexpr:  expr.* expr \nexpr:  expr./ expr \nexpr:  expr.% expr \nexpr:  expr.< < expr \nexpr:  expr.> > expr \nexpr:  expr.& expr \nexpr:  expr.^ expr \nexpr:  expr.| expr \n", /*109*/
+	0, /*110*/
+	0, /*111*/
+	0, /*112*/
+	"inst:  LCALL sreg ,.addr \ninst:  LCALL sreg ,.rel \n", /*113*/
+	"inst:  LMOVB addr ,.rreg \n", /*114*/
+	"inst:  LMOVB rreg ,.addr \n", /*115*/
+	"oreg:  con (.sreg ) \nname:  con (.pointer ) \n", /*116*/
+	"name:  LNAME offset.( pointer ) \n", /*117*/
+	"name:  LNAME <.> offset ( LSB ) \n", /*118*/
+	"inst:  LMOVBU addr ,.rreg \n", /*119*/
+	"inst:  LMOVF addr ,.dreg \n", /*120*/
+	"inst:  LMOVF dreg ,.addr \ninst:  LMOVF dreg ,.dreg \n", /*121*/
+	"inst:  LMOVW imm ,.rreg \ninst:  LMOVW imm ,.ctlreg \n", /*122*/
+	"inst:  LMOVW ximm ,.rreg \n", /*123*/
+	"inst:  LMOVW rreg ,.rreg \ninst:  LMOVW rreg ,.addr \ninst:  LMOVW rreg ,.ctlreg \n", /*124*/
+	"inst:  LMOVW addr ,.rreg \n", /*125*/
+	"inst:  LMOVW ctlreg ,.rreg \n", /*126*/
+	0, /*127*/
+	0, /*128*/
+	0, /*129*/
+	"ctlreg:  LCTL (.expr ) \n", /*130*/
+	"inst:  LLUI name ,.rreg \n", /*131*/
+	"inst:  LLUI imm ,.rreg \n", /*132*/
+	"name:  con (.pointer ) \n", /*133*/
+	"inst:  LCSR ctlreg ,.sreg , rreg \ninst:  LCSR ctlreg ,.$ con , rreg \n", /*134*/
+	"inst:  LSWAP rreg ,.sreg , rreg \n", /*135*/
+	"inst:  LAMO con ,.rreg , sreg , rreg \n", /*136*/
+	"inst:  LTEXT name ,.imm \ninst:  LTEXT name ,.con , imm \n", /*137*/
+	"inst:  LDATA name /.con , imm \ninst:  LDATA name /.con , ximm \ninst:  LDATA name /.con , fimm \n", /*138*/
+	0, /*139*/
+	0, /*140*/
+	0, /*141*/
+	"expr:  expr +.expr \n", /*142*/
+	"expr:  expr -.expr \n", /*143*/
+	"expr:  expr *.expr \n", /*144*/
+	"expr:  expr /.expr \n", /*145*/
+	"expr:  expr %.expr \n", /*146*/
+	"expr:  expr <.< expr \n", /*147*/
+	"expr:  expr >.> expr \n", /*148*/
+	"expr:  expr &.expr \n", /*149*/
+	"expr:  expr ^.expr \n", /*150*/
+	"expr:  expr |.expr \n", /*151*/
+	0, /*152*/
+	0, /*153*/
+	0, /*154*/
+	0, /*155*/
+	0, /*156*/
+	"sreg:  LR ( expr.) \nexpr:  expr.+ expr \nexpr:  expr.- expr \nexpr:  expr.* expr \nexpr:  expr./ expr \nexpr:  expr.% expr \nexpr:  expr.< < expr \nexpr:  expr.> > expr \nexpr:  expr.& expr \nexpr:  expr.^ expr \nexpr:  expr.| expr \n", /*157*/
+	0, /*158*/
+	"freg:  FR ( expr.) \nexpr:  expr.+ expr \nexpr:  expr.- expr \nexpr:  expr.* expr \nexpr:  expr./ expr \nexpr:  expr.% expr \nexpr:  expr.< < expr \nexpr:  expr.> > expr \nexpr:  expr.& expr \nexpr:  expr.^ expr \nexpr:  expr.| expr \n", /*159*/
+	"inst:  LFLT3 drreg , freg., drreg \n", /*160*/
+	"inst:  LBEQ rreg , sreg., rel \n", /*161*/
+	0, /*162*/
+	"rel:  con.( LPC ) \n", /*163*/
+	"rel:  con ( LPC.) \n", /*164*/
+	"oreg:  con ( sreg.) \n", /*165*/
+	0, /*166*/
+	0, /*167*/
+	0, /*168*/
+	0, /*169*/
+	0, /*170*/
+	0, /*171*/
+	"rel:  con.( LPC ) \noreg:  con.( sreg ) \nname:  con.( pointer ) \n", /*172*/
+	0, /*173*/
+	0, /*174*/
+	0, /*175*/
+	"name:  con ( pointer.) \n", /*176*/
+	0, /*177*/
+	0, /*178*/
+	0, /*179*/
+	"name:  LNAME offset (.pointer ) \n", /*180*/
+	0, /*181*/
+	0, /*182*/
+	0, /*183*/
+	0, /*184*/
+	0, /*185*/
+	0, /*186*/
+	0, /*187*/
+	0, /*188*/
+	0, /*189*/
+	0, /*190*/
+	0, /*191*/
+	0, /*192*/
+	0, /*193*/
+	"ctlreg:  LCTL ( expr.) \nexpr:  expr.+ expr \nexpr:  expr.- expr \nexpr:  expr.* expr \nexpr:  expr./ expr \nexpr:  expr.% expr \nexpr:  expr.< < expr \nexpr:  expr.> > expr \nexpr:  expr.& expr \nexpr:  expr.^ expr \nexpr:  expr.| expr \n", /*194*/
+	0, /*195*/
+	0, /*196*/
+	"inst:  LCSR ctlreg , sreg., rreg \n", /*197*/
+	"inst:  LCSR ctlreg , $.con , rreg \n", /*198*/
+	"inst:  LSWAP rreg , sreg., rreg \n", /*199*/
+	"inst:  LAMO con , rreg., sreg , rreg \n", /*200*/
+	0, /*201*/
+	"inst:  LTEXT name , con., imm \n", /*202*/
+	"inst:  LDATA name / con., imm \ninst:  LDATA name / con., ximm \ninst:  LDATA name / con., fimm \n", /*203*/
+	0, /*204*/
+	0, /*205*/
+	0, /*206*/
+	0, /*207*/
+	0, /*208*/
+	"expr:  expr < <.expr \n", /*209*/
+	"expr:  expr > >.expr \n", /*210*/
+	0, /*211*/
+	0, /*212*/
+	0, /*213*/
+	"inst:  LADD imm , sreg ,.rreg \n", /*214*/
+	"inst:  oprrr rreg , sreg ,.rreg \n", /*215*/
+	0, /*216*/
+	0, /*217*/
+	"inst:  LFLT3 drreg , freg ,.drreg \n", /*218*/
+	"inst:  LBEQ rreg , sreg ,.rel \n", /*219*/
+	"rel:  con (.LPC ) \n", /*220*/
+	0, /*221*/
+	0, /*222*/
+	"rel:  con (.LPC ) \noreg:  con (.sreg ) \nname:  con (.pointer ) \n", /*223*/
+	0, /*224*/
+	0, /*225*/
+	"name:  LNAME offset ( pointer.) \n", /*226*/
+	"name:  LNAME < > offset.( LSB ) \n", /*227*/
+	0, /*228*/
+	"inst:  LCSR ctlreg , sreg ,.rreg \n", /*229*/
+	"inst:  LCSR ctlreg , $ con., rreg \n", /*230*/
+	"inst:  LSWAP rreg , sreg ,.rreg \n", /*231*/
+	"inst:  LAMO con , rreg ,.sreg , rreg \n", /*232*/
+	"inst:  LTEXT name , con ,.imm \n", /*233*/
+	"inst:  LDATA name / con ,.imm \ninst:  LDATA name / con ,.ximm \ninst:  LDATA name / con ,.fimm \n", /*234*/
+	0, /*235*/
+	0, /*236*/
+	0, /*237*/
+	0, /*238*/
+	0, /*239*/
+	0, /*240*/
+	0, /*241*/
+	"name:  LNAME < > offset (.LSB ) \n", /*242*/
+	0, /*243*/
+	"inst:  LCSR ctlreg , $ con ,.rreg \n", /*244*/
+	0, /*245*/
+	"inst:  LAMO con , rreg , sreg., rreg \n", /*246*/
+	0, /*247*/
+	0, /*248*/
+	0, /*249*/
+	0, /*250*/
+	"ximm:  $.addr \nximm:  $.LSCONST \nfimm:  $.LFCONST \nfimm:  $.- LFCONST \nimm:  $.con \n", /*251*/
+	"name:  LNAME < > offset ( LSB.) \n", /*252*/
+	0, /*253*/
+	"inst:  LAMO con , rreg , sreg ,.rreg \n", /*254*/
+	0, /*255*/
+	"fimm:  $ -.LFCONST \ncon:  -.con \n", /*256*/
+	0, /*257*/
+	0, /*258*/
+	0, /*259*/
+};
