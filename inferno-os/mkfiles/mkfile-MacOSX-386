@@ -12,16 +12,16 @@ A=		a
 MACVER=	10.5
 
 
-AS=		cc -c -arch i386 -m32
+AS=		cc -c -arch i386 -m64
 ASFLAGS= -mmacosx-version-min=$MACVER
 
 ISYSROOT=	-isysroot /Developer/SDKs/MacOSX$MACVER.sdk
 
-CC=		cc -c -m32
+CC=		cc -c -m64
 COPTFLAGS=	-Os
 CDEBUGFLAGS=
 CTHREADFLAGS=
-CFLAGS= 	-arch i386 -m32\
+CFLAGS= 	-arch i386 -m64\
 		-mmacosx-version-min=$MACVER\
 		-Wno-deprecated-declarations -Wuninitialized -Wunused -Wreturn-type -Wimplicit -Wno-four-char-constants -Wno-unknown-pragmas\
 		-Wno-main-return-type \
@@ -39,7 +39,7 @@ CFLAGS= 	-arch i386 -m32\
 		-I$ROOT/include\
 		$COPTFLAGS $CDEBUGFLAGS\
 
-LD=		cc -arch i386 -m32
+LD=		cc -arch i386 -m64
 LDFLAGS=\
 		-mmacosx-version-min=$MACVER\
 		-multiply_defined suppress

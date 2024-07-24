@@ -8,10 +8,10 @@ OS=		o
 AR=		ar
 ARFLAGS=	crvs
 
-AS=		cc -c -m32
+AS=		cc -c -m64
 ASFLAGS=
 
-CC=		cc -c -m32
+CC=		cc -c -m64
 CFLAGS=		-g\
 		-O\
 		-Wuninitialized -Wunused-variable -Wreturn-type -Wimplicit\
@@ -20,7 +20,7 @@ CFLAGS=		-g\
 		-I/usr/X11R6/include
 
 ANSICPP=
-LD=		cc -m32
+LD=		cc -m64
 LDFLAGS=	-L/usr/openwin/lib\
 		-L/usr/X11R6/lib\
 

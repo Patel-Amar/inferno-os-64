@@ -8,10 +8,10 @@ OS=		o
 AR=		ar
 ARFLAGS=	ruvs
 
-AS=		cc -c -m32
+AS=		cc -c -m64
 ASFLAGS=
 
-CC=		cc -c -m32
+CC=		cc -c -m64
 CFLAGS=		-g\
 		-O\
 		-fno-strict-aliasing\
@@ -23,7 +23,7 @@ CFLAGS=		-g\
 		-DLINUX_386
 
 ANSICPP=
-LD=		cc -m32
+LD=		cc -m64
 LDFLAGS=
 
 SYSLIBS=
