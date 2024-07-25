@@ -8,44 +8,44 @@
 	.type	umult,@function
 	.global	umult
 umult:
-	pushl	%ebp
-	movl	%esp, %ebp
-	pushl	%ebx
+	push	%rbp
+	mov	%rsp, %rbp
+	push	%rbx
 
-	movl	8(%ebp), %eax
-	movl	12(%ebp), %ebx
-	mull	%ebx
-	movl	16(%ebp), %ebx
-	movl	%edx, (%ebx)
+	mov	8(%rbp), %rax
+	mov	12(%rbp), %rbx
+	mul	%rbx
+	mov	16(%rbp), %rbx
+	mov	%rdx, (%rbx)
 
-	popl	%ebx
-	popl	%ebp
+	pop	%rbx
+	pop	%rbp
 	ret
 
 	.type	FPsave,@function
 	.global	FPsave
 FPsave:
-	pushl	%ebp
-	movl	%esp, %ebp
-	movl	8(%ebp), %eax
-	fstenv	(%eax)
-	popl	%ebp
+	push	%rbp
+	mov	%rsp, %rbp
+	mov	8(%rbp), %rax
+	fstenv	(%rax)
+	pop	%rbp
 	ret
 
 	.type	FPrestore,@function
 	.global	FPrestore
 FPrestore:
-	pushl	%ebp
-	movl	%esp, %ebp
-	movl	8(%ebp), %eax
-	fldenv	(%eax)
-	popl	%ebp
+	push	%rbp
+	mov	%rsp, %rbp
+	mov	8(%rbp), %rax
+	fldenv	(%rax)
+	pop	%rbp
 	ret
 
 	.type	_tas,@function
 	.globl	_tas
 _tas:
-	movl	$1, %eax
-	movl	4(%esp), %ecx
-	xchgl	%eax, 0(%ecx)
+	mov	$1, %rax
+	mov	4(%rsp), %rcx
+	xchg	%rax, 0(%rcx)
 	ret
