@@ -1,0 +1,5 @@
+
+# do not endit the mkconfig file to ensure people have the correct root file for running mk and inferno-os
+inferno-os/mkconfig
+*.o
+*.a

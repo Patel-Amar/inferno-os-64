@@ -4,7 +4,7 @@
 #	They are almost always the same.
 
 #	On Nt systems, the ROOT path MUST be of the form `drive:/path'
-ROOT=/home/arp397/cs370/hnrs/inferno-os-64/inferno-os
+ROOT=/home/bcg64/cs370//inferno-os-honors-work/inferno-os-64/inferno-os
 
 #
 #	Specify the flavour of Tk (std for standard builds)
