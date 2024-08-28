@@ -1,6 +1,6 @@
 typedef uchar		BYTE;		/* 8  bits */
-typedef int		WORD;		/* 32 bits */
-typedef unsigned int	UWORD;		/* 32 bits */
+typedef vlong	    WORD;		/* 32 bits */
+typedef uvlong 		UWORD;		/* 32 bits */
 typedef vlong		LONG;		/* 64 bits */
 typedef uvlong		ULONG;		/* 64 bits */
 typedef double		REAL;		/* 64 double IEEE754 */

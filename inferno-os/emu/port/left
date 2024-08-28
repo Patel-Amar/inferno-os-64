@@ -1,0 +1,6 @@
+alloc.c:	if(pool->move == nil || pool->lastfree == pool->nfree)
+alloc.c:	pool->lastfree = pool->nfree;
+alloc.c:	base = pool->chain;
+alloc.c:	pool->root = nil;
+alloc.c:				pool->move(B2D(ptr), B2D(end));
+alloc.c:				if(nb < pool->quanta+1){

@@ -118,6 +118,7 @@ brpatch(Inst *ip, Module *m)
 	case ISPAWN:
 		if(ip->d.imm < 0 || ip->d.imm >= m->nprog)
 			return 0;
+		print("GOT TO THE imm part\n");
 		ip->d.imm = (WORD)&m->prog[ip->d.imm];
 		break;
 	}
@@ -135,8 +136,8 @@ parsemod(char *path, uchar *code, ulong length, Dir *dir)
 	Array *ary;
 	ulong ul[2];
 	WORD lo, hi;
-	int lsize, id, v, entry, entryt, tnp, tsz, siglen;
-	int de, pc, i, n, isize, dsize, hsize, dasp;
+	long lsize, id, v, entry, entryt, tnp, tsz, siglen;
+	long de, pc, i, n, isize, dsize, hsize, dasp;
 	uchar *mod, sm, *istream, **isp, *si, *addr, *dastack[DADEPTH];
 	Link *l;
 

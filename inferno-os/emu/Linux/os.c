@@ -172,14 +172,13 @@ libinit(char *imod)
 		uidnobody = pw->pw_uid;
 		gidnobody = pw->pw_gid;
 	}
-
+	
 	if(dflag == 0)
 		termset();
 
 	memset(&act, 0, sizeof(act));
 	act.sa_handler = trapUSR1;
 	sigaction(SIGUSR1, &act, nil);
-
 	act.sa_handler = SIG_IGN;
 	sigaction(SIGCHLD, &act, nil);
 
@@ -204,7 +203,7 @@ libinit(char *imod)
 		sigaction(SIGSEGV, &act, nil);
 		act.sa_flags &= ~SA_SIGINFO;
 	}
-
+	
 	p = newproc();
 	kprocinit(p);
 
@@ -221,7 +220,6 @@ libinit(char *imod)
 
 	p->env->uid = getuid();
 	p->env->gid = getgid();
-
 	emuinit(imod);
 }
 

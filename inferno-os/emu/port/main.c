@@ -192,7 +192,8 @@ savestartup(int argc, char *argv[])
 	int i;
 
 	rebootargc = argc;
-	rebootargv = malloc((argc+1)*sizeof(char*));
+	rebootargv = malloc((argc+1)* 2 * sizeof(char*));
+		
 	if(rebootargv == nil)
 		panic("can't save startup args");
 	for(i = 0; i < argc; i++) {
@@ -237,14 +238,17 @@ main(int argc, char *argv[])
 	char *opt, *p;
 	char *enva[20];
 	int envc;
-	
+
 	if(coherence == nil)
 		coherence = nofence;
+
 	quotefmtinstall();
 	savestartup(argc, argv);
+
 	/* set default root now, so either $EMU or -r can override it later */
 	if((p = getenv("INFERNO")) != nil || (p = getenv("ROOT")) != nil)
 		strecpy(rootdir, rootdir+sizeof(rootdir), p);
+
 	opt = getenv("EMU");
 	if(opt != nil && *opt != '\0') {
 		enva[0] = "emu";
@@ -252,6 +256,7 @@ main(int argc, char *argv[])
 		enva[envc] = 0;
 		option(envc, enva, envusage);
 	}
+	
 	option(argc, argv, usage);
 	eve = strdup("inferno");
 
@@ -261,7 +266,7 @@ main(int argc, char *argv[])
 
 	if(vflag)
 		print("Inferno %s main (pid=%d) %s\n", VERSION, getpid(), opt);
-
+	
 	libinit(imod);
 }
 
@@ -325,9 +330,9 @@ emuinit(void *imod)
 			putenvq("emuwdir", wdir, 1);
 		free(wdir);
 	}
-
+	
 	kproc("main", disinit, imod, KPDUPFDG|KPDUPPG|KPDUPENVG);
-
+	// print("B\n");
 	for(;;)
 		ospause(); 
 }

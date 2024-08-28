@@ -362,8 +362,9 @@ Heap*
 nheap(int n)
 {
 	Heap *h;
-
-	h = poolalloc(heapmem, sizeof(Heap)+n);
+	print("MADE IT HERE - %d \n", n);
+	h = poolalloc(heapmem, (sizeof(Heap))+n);
+    print("LLL - %p\n", h);
 	if(h == nil)
 		error(exHeap);
 
@@ -380,6 +381,8 @@ Heap*
 heapz(Type *t)
 {
 	Heap *h;
+
+    print("HEREEEE\n");
 
 	h = poolalloc(heapmem, sizeof(Heap)+t->size);
 	if(h == nil)
@@ -514,9 +517,13 @@ newmp(void *dst, void *src, Type *t)
 		if(c != 0) {
 			m = 0x80;
 			q = uld;
+            print("MMMMM - %p %p\n", q, *q);
+    
 			while(m != 0) {
 				if((m & c) && (wp = *q) != H) {
 					h = D2H(wp);
+                    print("JJJ --- %p %p %lud\n", h, (m & c) && (wp = *q), sizeof(Heap));
+                    print("TTT %p\n", h->t);
 					if(h->t == &Tarray)
 						*q = arraycpy(wp);
 					else {

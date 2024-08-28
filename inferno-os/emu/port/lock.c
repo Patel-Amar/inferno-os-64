@@ -6,9 +6,9 @@ void
 lock(Lock *l)
 {
 	int i;
-
 	if(_tas(&l->val) == 0)
 		return;
+
 	for(i=0; i<100; i++){
 		if(_tas(&l->val) == 0)
 			return;

@@ -23,6 +23,12 @@
 #define pthread_yield() (sched_yield())
 #endif
 
+#ifdef LINUX_AMD64
+#include <sched.h>
+#define pthread_yield() (sched_yield())
+#endif
+
+
 typedef struct Osdep Osdep;
 struct Osdep {
 	sem_t	sem;
@@ -152,8 +158,9 @@ kproc(char *name, void (*func)(void*), void *arg, int flags)
 
 	p->func = func;
 	p->arg = arg;
-
+	print("h\n");
 	lock(&procs.l);
+	print("h1\n");
 	if(procs.tail != nil) {
 		p->prev = procs.tail;
 		procs.tail->next = p;
@@ -162,7 +169,9 @@ kproc(char *name, void (*func)(void*), void *arg, int flags)
 		p->prev = nil;
 	}
 	procs.tail = p;
+	print("C\n");
 	unlock(&procs.l);
+	print("P\n");
 
 	memset(&attr, 0, sizeof(attr));
 	if(pthread_attr_init(&attr) == -1)

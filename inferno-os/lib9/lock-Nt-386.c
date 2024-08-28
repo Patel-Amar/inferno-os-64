@@ -1,15 +1,15 @@
 #include "lib9.h"
 
-int
-_tas(int *la)
+ulong
+_tas(ulong *la)
 {
 	int v;
 
 	_asm {
-		mov eax, la
-		mov ebx, 1
-		xchg	ebx, [eax]
-		mov	v, ebx
+		mov rax, la
+		mov rbx, 1
+		xchg	rbx, [rax]
+		mov	v, rbx
 	}
 	return v;
 }

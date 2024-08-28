@@ -4,7 +4,7 @@
 #	They are almost always the same.
 
 #	On Nt systems, the ROOT path MUST be of the form `drive:/path'
-ROOT=/home/arp397/cs370/inferno-os
+ROOT=/home/arp397/cs370/hnrs/inferno-os-64/inferno-os
 
 #
 #	Specify the flavour of Tk (std for standard builds)
@@ -21,8 +21,8 @@ SYSTARG=$SYSHOST		# target system OS type (AIX, Hp, Inferno, Irix, Linux, Nt, Pl
 #	specify the architecture of the target system - Plan 9 imports it from the
 #	environment; for other systems it is usually just hard-coded
 #
-OBJTYPE=386			# target system object type (eg, 386, arm, mips, power, s800, sparc)
-#OBJTYPE=$objtype
+#OBJTYPE=386			# target system object type (eg, 386, arm, mips, power, s800, sparc)
+OBJTYPE=amd64
 
 #
 #	no changes required beyond this point

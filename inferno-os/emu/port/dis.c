@@ -31,8 +31,6 @@ uvlong	gcidlepass;
 uvlong	gcpartial;
 int keepbroken = 1;
 extern int	vflag;
-       char	*eve;
-       ulong    kerndate;
 static Prog*	proghash[64];
 
 static Progs*	delgrp(Prog*);
@@ -769,8 +767,10 @@ schedmod(Module *m)
 		t = m->type[0];
 		h = nheap(t->size);
 		h->t = t;
+        print("PPPP - %p\n", h->t);
 		t->ref++;
 		ml->MP = H2D(uchar*, h);
+        print("PPPP - %p %p %lud\n", ml->MP, m->origmp, t);
 		newmp(ml->MP, m->origmp, t);
 	}
 
@@ -1089,40 +1089,30 @@ disinit(void *a)
 	Osenv *o;
 	Module *root;
 	char *initmod = a;
-	int seconds;
-	int minutes;
-	int hours;
 
 	if(waserror())
 		panic("disinit error: %r");
 
-	if(vflag) {
+	if(vflag)
 		print("Initial Dis: \"%s\"\n", initmod);
-		print("%s\n", eve);
-
-		seconds = kerndate % 60;
-		minutes = (kerndate/60)%60;
-		hours = (kerndate/3600)%24;
-		print("Compiled Time: %02d:%02d:%02d\n", hours, minutes, seconds );
-	}
-
+	
 	fmtinstall('D', Dconv);
 
 	FPinit();
 	FPsave(&up->env->fpu);
-
+	
 	opinit();
 	modinit();
 	excinit();
 
 	root = load(initmod);
+	
 	if(root == 0) {
 		kgerrstr(up->genbuf, sizeof up->genbuf);
 		panic("loading \"%s\": %s", initmod, up->genbuf);
 	}
-
+	
 	p = schedmod(root);
-
 	memmove(p->osenv, up->env, sizeof(Osenv));
 	o = p->osenv;
 	incref(&o->pgrp->r);
