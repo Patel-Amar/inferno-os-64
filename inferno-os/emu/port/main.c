@@ -192,7 +192,7 @@ savestartup(int argc, char *argv[])
 	int i;
 
 	rebootargc = argc;
-	rebootargv = malloc((argc+1)* 2 * sizeof(char*));
+	rebootargv = malloc((argc+1) * sizeof(char*));
 		
 	if(rebootargv == nil)
 		panic("can't save startup args");
@@ -332,7 +332,7 @@ emuinit(void *imod)
 	}
 	
 	kproc("main", disinit, imod, KPDUPFDG|KPDUPPG|KPDUPENVG);
-	// print("B\n");
+	
 	for(;;)
 		ospause(); 
 }
