@@ -8,8 +8,12 @@ enum
 	MAXPOOL		= 4
 };
 
-#define relem           u.s.right
-#define lelem           u.s.left
+#define left	u.s.bhl
+#define right	u.s.bhr
+#define fwd	u.s.bhf
+#define prev	u.s.bhv
+#define parent	u.s.bhp
+
 #define RESERVED	512*1024
 
 struct Pool
@@ -25,7 +29,7 @@ struct Pool
 	ulong	arenasize;
 	ulong	hw;
 	Lock	l;
-	Bhdr*	head;
+	Bhdr*	root;
 	Bhdr*	chain;
 	ulong	nalloc;
 	ulong	nfree;
@@ -44,9 +48,9 @@ struct
 } table = {
 	3,
 	{
-		{ "main",  0, 	32*1024*1024, 63,  512*1024, 0, 31*1024*1024 },
-		{ "heap",  1, 	32*1024*1024, 63,  512*1024, 0, 31*1024*1024 },
-		{ "image", 2,   64*1024*1024+256, 63, 4*1024*1024, 1, 63*1024*1024 },
+		{ "main",  0, 	32*1024*1024, 31,  512*1024, 0, 31*1024*1024 },
+		{ "heap",  1, 	32*1024*1024, 31,  512*1024, 0, 31*1024*1024 },
+		{ "image", 2,   64*1024*1024+256, 31, 4*1024*1024, 1, 63*1024*1024 },
 	}
 };
 
@@ -149,90 +153,130 @@ poolchain(Pool *p)
 	return p->chain;
 }
 
-void printmem(Pool *p) {
-	if (p->name == "heap") {
-	for (Bhdr *q = p->head; q != nil; q = q->relem) {
-		print("Mem %p, Right %p\n", q, q->relem);
-		print("--------------------------------\n");
-	}
-	}
-}
-
 void
 pooldel(Pool *p, Bhdr *t)
 {
-	Bhdr *q;
-	
-	print("DEL Name: %s Mem: %p Right: %p %lux\n",p->name, t, t->relem, sizeof(Bhdr));
-    //	if (t->relem == 0xffffffffffffffff) {
-    //    	t->relem = nil;
-    //	}
-	if (t == p->head) {
-		p->head = t->relem;
-		if (p->head != nil) {
-			p->head->lelem = nil;
+	Bhdr *s, *f, *rp, *q;
+
+	if(t->parent == nil && p->root != t) {
+		t->prev->fwd = t->fwd;
+		t->fwd->prev = t->prev;
+		return;
+	}
+
+	if(t->fwd != t) {
+		f = t->fwd;
+		s = t->parent;
+		f->parent = s;
+		if(s == nil)
+			p->root = f;
+		else {
+			if(s->left == t)
+				s->left = f;
+			else
+				s->right = f;
 		}
-		printmem(p);
+
+		rp = t->left;
+		f->left = rp;
+		if(rp != nil)
+			rp->parent = f;
+		rp = t->right;
+		f->right = rp;
+		if(rp != nil)
+			rp->parent = f;
+
+		t->prev->fwd = t->fwd;
+		t->fwd->prev = t->prev;
 		return;
 	}
 
-	q = t->lelem;
-	
-	if (q == nil) {
-		printmem(p);
-		return;
+	if(t->left == nil)
+		rp = t->right;
+	else {
+		if(t->right == nil)
+			rp = t->left;
+		else {
+			f = t;
+			rp = t->right;
+			s = rp->left;
+			while(s != nil) {
+				f = rp;
+				rp = s;
+				s = rp->left;
+			}
+			if(f != t) {
+				s = rp->right;
+				f->left = s;
+				if(s != nil)
+					s->parent = f;
+				s = t->right;
+				rp->right = s;
+				if(s != nil)
+					s->parent = rp;
+			}
+			s = t->left;
+			rp->left = s;
+			s->parent = rp;
+		}
 	}
-
-	q->relem = t->relem;
-
-	if (t->relem != nil) {
-		t->relem->lelem = q;
+	q = t->parent;
+	if(q == nil)
+		p->root = rp;
+	else {
+		if(t == q->left)
+			q->left = rp;
+		else
+			q->right = rp;
 	}
-	printmem(p);
+	if(rp != nil)
+		rp->parent = q;
 }
-
-
 
 void
 pooladd(Pool *p, Bhdr *q)
 {
 	int size;
-	Bhdr *t;
+	Bhdr *tp, *t;
 
 	q->magic = MAGIC_F;
-	q->relem = nil;
-	q->lelem = nil;
 
-	t = p->head;
-	if (t == nil) {
-		p->head = q;
-        if (p->name == "heap")
-            	print("ADD Name: %s Mem: %p Size: %d RightL %p \n",p->name, q, q->size, q->relem);
-		printmem(p);
+	q->left = nil;
+	q->right = nil;
+	q->parent = nil;
+	q->fwd = q;
+	q->prev = q;
+
+	t = p->root;
+	if(t == nil) {
+		p->root = q;
 		return;
 	}
 
-	while (t->relem != nil && t->size < q->size) {
-		t = t->relem;
-	}
-	
-	// If the right place to insert is at the end of the list	
-	if (t->relem == nil && t->size < q->size) {
-		t->relem = q;
-		q->lelem = t;
-	        print("ADD1 Name: %s Mem: %p Size: %d RightL %p \n",p->name, q, q->size, q->relem);
-		printmem(p);
-		return;
+	size = q->size;
+
+	tp = nil;
+	while(t != nil) {
+		if(size == t->size) {
+			q->prev = t->prev;
+			q->prev->fwd = q;
+			q->fwd = t;
+			t->prev = q;
+			return;
+		}
+		tp = t;
+		if(size < t->size)
+			t = t->left;
+		else
+			t = t->right;
 	}
 
-	q->relem = t;
-	q->lelem = t->lelem;
-	t->lelem = q;
-
-    print("ADD Name: %s Mem: %p Size: %d RightL %p \n",p->name, q, q->size, q->relem);
-	printmem(p);
+	q->parent = tp;
+	if(size < tp->size)
+		tp->left = q;
+	else
+		tp->right = q;
 }
-
 
 static void*
 dopoolalloc(Pool *p, ulong asize, ulong pc)
@@ -240,7 +284,7 @@ dopoolalloc(Pool *p, ulong asize, ulong pc)
 	Bhdr *q, *t;
 	int alloc, ldr, ns, frag;
 	int osize, size;
-	
+
 	if(asize >= 1024*1024*1024)	/* for sanity and to avoid overflow */
 		return nil;
 	size = asize;
@@ -250,13 +294,28 @@ dopoolalloc(Pool *p, ulong asize, ulong pc)
 	lock(&p->l);
 	p->nalloc++;
 
-	t = p->head;
+	t = p->root;
 	q = nil;
-
-	while(t != nil && t->size < size) {
-		t = t->relem;
+	while(t) {
+		if(t->size == size) {
+			t = t->fwd;
+			pooldel(p, t);
+			t->magic = MAGIC_A;
+			p->cursize += t->size;
+			if(p->cursize > p->hw)
+				p->hw = p->cursize;
+			unlock(&p->l);
+			if(p->monitor)
+				MM(p->pnum, pc, (ulong)B2D(t), size);
+			return B2D(t);
+		}
+		if(size < t->size) {
+			q = t;
+			t = t->left;
+		}
+		else
+			t = t->right;
 	}
-	q = t;
 	if(q != nil) {
 		pooldel(p, q);
 		q->magic = MAGIC_A;
@@ -320,10 +379,9 @@ dopoolalloc(Pool *p, ulong asize, ulong pc)
 		unlock(&p->l);
 		return nil;
 	}
-#if defined(__NetBSD__) || defined(LINUX_AMD64)
+#ifdef __NetBSD__
 	/* Align allocations to 16 bytes */
 	{
-        print("TESTING IF IT CAME HERE\n");
 		const size_t off = __builtin_offsetof(struct Bhdr, u.data)
 					+ Npadlong*sizeof(ulong);
 		struct assert_align {
@@ -335,7 +393,6 @@ dopoolalloc(Pool *p, ulong asize, ulong pc)
 	}
 #else
 	/* Double alignment */
-    print("HERE TOO\n");
 	t = (Bhdr *)(((ulong)t + 7) & ~7);
 #endif
 	if(p->chain != nil && (char*)t-(char*)B2LIMIT(p->chain)-ldr == 0){
@@ -390,19 +447,17 @@ poolalloc(Pool *p, ulong asize)
 {
 	Prog *prog;
 
-	if(p->cursize > p->ressize && (prog = currun()) != nil && prog->flags&Prestricted) {
+	if(p->cursize > p->ressize && (prog = currun()) != nil && prog->flags&Prestricted)
 		return nil;
-    }
 	return dopoolalloc(p, asize, getcallerpc(&p));
 }
 
 void
 poolfree(Pool *p, void *v)
 {
-
 	Bhdr *b, *c;
 	extern Bhdr *ptr;
-	
+
 	D2B(b, v);
 	if(p->monitor)
 		MM(p->pnum|(1<<8), getcallerpc(&p), (ulong)v, b->size);
@@ -410,7 +465,6 @@ poolfree(Pool *p, void *v)
 	lock(&p->l);
 	p->nfree++;
 	p->cursize -= b->size;
-
 	c = B2NB(b);
 	if(c->magic == MAGIC_F) {	/* Join forward */
 		if(c == ptr)
@@ -488,10 +542,10 @@ poolmax(Pool *p)
 
 	lock(&p->l);
 	size = p->maxsize - p->cursize;
-	t = p->head;
+	t = p->root;
 	if(t != nil) {
-		while(t->relem != nil)
-			t = t->relem;
+		while(t->right != nil)
+			t = t->right;
 		if(size < t->size)
 			size = t->size;
 	}
@@ -783,7 +837,7 @@ poolcompact(Pool *pool)
 	limit = B2LIMIT(base);
 	compacted = 0;
 
-	pool->head = nil;
+	pool->root = nil;
 	end = ptr;
 	while(base != nil) {
 		next = B2NB(ptr);

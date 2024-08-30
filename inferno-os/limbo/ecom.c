@@ -1380,9 +1380,6 @@ ecom(Src *src, Node *nto, Node *n)
 			if(left->ty->tof == treal)
 				op = IINDF;
 			break;
-		case IBY2WD:
-			op = IINDW;
-			break;
 		case 1:
 			op = IINDB;
 			break;

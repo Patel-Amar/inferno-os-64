@@ -16,13 +16,16 @@ enum
 
 struct Bhdr
 {
-	u32int	magic;
-	u64int	size;
+	ulong	magic;
+	ulong	size;
 	union {
 		uchar data[1];
 		struct {
-			Bhdr*	right;
-			Bhdr*   left;
+			Bhdr*	bhl;
+			Bhdr*	bhr;
+			Bhdr*	bhp;
+			Bhdr*	bhv;
+			Bhdr*	bhf;
 		} s;
 #define clink	u.l.link
 #define csize	u.l.size
@@ -49,7 +52,7 @@ struct Btail
 
 #define B2LIMIT(b)	((Bhdr*)((uchar*)b + b->csize))
 
-#define BHDRSIZE	((int64_t)(((Bhdr*)0)->u.data)+sizeof(Btail))
+#define BHDRSIZE	((int)(((Bhdr*)0)->u.data)+sizeof(Btail))
 
 extern	void	(*poolfault)(void *, char *, ulong);
 extern	void	poolinit(void);
